@@ -20,34 +20,48 @@ fun Application.configureRouting() {
             call.respondRedirect("gemstones")
         }
         route("gemstones") {
+            /* Home page */
             get{
-                println("Gemstones called")
                 call.respond(FreeMarkerContent("index.ftl", mapOf("gemstones" to gemstones)))
             }
             get("{id}") {
-                val id = call.parameters.getOrFail("id").toInt()
+                val id = call.parameters.getOrFail<Int>("id").toInt()
                 call.respond(FreeMarkerContent("gem.ftl", mapOf("gem" to gemstones.find { it.id == id })))
             }
             get("{id}/edit") {
-                // show page with fields to edit gemstone
+                val id = call.parameters.getOrFail<Int>("id").toInt()
+                call.respond(FreeMarkerContent("edit.ftl", mapOf("gem" to gemstones.find { it.id == id }, "monthList" to monthList)))
             }
             get("new") {
-                // Page with form for new Gemstone
                 call.respond(FreeMarkerContent("new.ftl", mapOf("monthList" to monthList)))
             }
+            /* Create new gemstone entry */
             post {
                 val formParameters = call.receiveParameters()
-                val gemstoneName = formParameters.getOrFail("gemstoneName")
-                val month = formParameters.getOrFail("month")
                 val newEntry = Gemstone.newGemstone(
-                    gemstoneName,
-                    MONTH.valueOf(month)
+                    formParameters.getOrFail("gemstoneName"),
+                    MONTH.valueOf(formParameters.getOrFail("month"))
                 )
                 gemstones.add(newEntry)
                 call.respondRedirect("/gemstones/${newEntry.id}")
             }
+            /* Update or delete gemstone */
             post ("{id}"){
-                // update or delete gemstone
+                val id = call.parameters.getOrFail<Int>("id").toInt()
+                val formParameters = call.receiveParameters()
+                when(formParameters.getOrFail("_action")) {
+                    "update" -> {
+                        val index = gemstones.indexOf(gemstones.find { it.id == id })
+                        gemstones[index].name = formParameters.getOrFail("name")
+                        gemstones[index].birthMonth = MONTH.valueOf(formParameters.getOrFail("month"))
+                        call.respondRedirect("/gemstones/$id")
+                    }
+                    "delete" -> {
+                        gemstones.removeIf { it.id == id }
+                        call.respondRedirect("/gemstones")
+
+                    }
+                }
             }
         }
     }
