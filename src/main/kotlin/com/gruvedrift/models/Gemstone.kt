@@ -16,7 +16,9 @@ enum class MONTH {
     JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER
 }
 
-val gemStones = mutableListOf(
+val monthList = MONTH.values().toList()
+
+val gemstones = mutableListOf(
     Gemstone.newGemstone("Garnet", MONTH.JANUARY),
     Gemstone.newGemstone("Amethyst", MONTH.FEBRUARY),
     Gemstone.newGemstone("Aquamarine", MONTH.MARCH),
