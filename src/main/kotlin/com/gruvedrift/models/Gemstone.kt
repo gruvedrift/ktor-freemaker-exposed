@@ -1,15 +1,27 @@
 package com.gruvedrift.models
 
+import org.jetbrains.exposed.sql.*
 import java.util.concurrent.atomic.AtomicInteger
 
 // Factory Method design pattern
-class Gemstone
-    private constructor( val id: Int, var name: String, var birthMonth: MONTH) {
-
+data class Gemstone (
+    val id: Int,
+    val name: String,
+    val birthMonth: MONTH,
+) {
     companion object{
         private val idCounter =  AtomicInteger()
         fun newGemstone( name: String, birthMonth: MONTH ) = Gemstone(idCounter.getAndIncrement(), name, birthMonth)
     }
+
+}
+
+object Gemstones : Table() {
+    val id = integer("id").autoIncrement()
+    val name = varchar("name", 128)
+    val birthMonth = varchar("birthMonth", 128)
+
+    override var primaryKey = PrimaryKey(id)
 }
 
 enum class MONTH {
