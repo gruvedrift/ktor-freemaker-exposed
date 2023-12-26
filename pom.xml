@@ -17,7 +17,7 @@
         <h2_version>2.1.214</h2_version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
-        <main.class>io.ktor.server.netty.EngineMain</main.class>
+        <main.class>com.gruvedrift.ApplicationKt</main.class>
     </properties>
     <repositories>
             <repository>
